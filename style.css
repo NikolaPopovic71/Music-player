@@ -514,12 +514,13 @@ input[type="range"]::-ms-fill-lower {
 }
 
 @media (max-width: 620px) {
-  body {
+   body {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Ensure body takes full viewport height */
+    min-height: 100vh; /* Ensure body takes full viewport height */
+    overflow-y: auto;
   }
 
   .listed-songs {
