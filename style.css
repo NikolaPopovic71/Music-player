@@ -1,0 +1,569 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-lsd: #3f3d2f;
+  --bg-lso: #353839;
+  --clr: #f0f0f0;
+}
+
+body {
+  display: grid;
+  grid-template-columns: 1fr 5fr; /* Divide screen into 1/6 and 5/6 */
+  font-family: "Rubik", sans-serif;
+  min-height: 100vh;
+  overflow: hidden;
+  background: url(assets/The_Best_Of_Relaxing_Music.png) no-repeat center center
+    fixed;
+  background-size: cover;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Left side styling */
+.left-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  position: relative; /* Position relative for toggle positioning */
+  transition: transform 0.5s ease;
+}
+
+.left-side.closed {
+  transform: translateX(-100%); /* Hide left side */
+}
+
+.toggle-left {
+  position: absolute;
+  right: -1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--clr);
+  background: #c02425;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.5s ease, left 0.5s ease, top 0.5s ease;
+}
+
+.left-side.closed .toggle-left {
+  left: 20rem; /* Position in the top left corner when closed */
+  top: 1rem;
+  transform: translate(0, 0);
+}
+
+.file-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  width: 100%; /* Full width to center relative to parent */
+  height: 4rem; /* Adjust as needed */
+}
+
+.file-input input[type="file"] {
+  display: none; /* Hide the default file input */
+}
+
+.custom-file-upload {
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  cursor: pointer;
+  background-image: linear-gradient(
+    to right,
+    #c02425 0%,
+    #f0cb35 51%,
+    #c02425 100%
+  );
+  background-size: 200% auto;
+  transition: 0.5s;
+  box-shadow: 0 0 20px #661f01;
+  color: var(--clr);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.custom-file-upload:hover {
+  background-position: right center;
+}
+
+.listed-songs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  border: 1px solid var(--bg-lso);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  margin-bottom: 2rem;
+  width: 90%;
+  max-height: 60vh; /* Control height */
+}
+
+.listed-songs p {
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--bg-lsd);
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--clr);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.total-duration {
+  font-size: 0.8rem;
+  color: var(--clr);
+  text-align: center;
+  padding-bottom: 1rem;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.buttons button {
+  padding: 0.3rem 1rem;
+  cursor: pointer;
+  background-image: linear-gradient(
+    to right,
+    #c02425 0%,
+    #f0cb35 51%,
+    #c02425 100%
+  );
+  background-size: 200% auto;
+  transition: 0.5s;
+  box-shadow: 0 0 20px #661f01;
+  color: var(--clr);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.buttons button:hover {
+  background-position: right center;
+}
+
+.buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-image: none; /* Optional: Remove background gradient */
+  background-color: gray; /* Optional: Set a neutral background */
+  box-shadow: none; /* Optional: Remove shadow effect */
+}
+
+/* Right side styling */
+.right-side {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding: 2rem;
+  font-family: "Rubik";
+  text-transform: uppercase;
+  color: var(--clr);
+}
+
+/* General styling for the music player container */
+.music-player-container {
+  width: 100%;
+  max-width: 44rem;
+  border-radius: 1rem;
+  transition: all 0.75s cubic-bezier(0.075, 0.82, 0.165, 1);
+  position: relative;
+}
+
+.music-player-container.hide {
+  width: 15rem; /* Width when hidden */
+}
+
+.music-player-container.hide .track-info {
+  min-width: 16rem; /* Set this to the width you'd like .track-info to maintain */
+}
+
+.music-player-container.hide .track-nav,
+.music-player-container.hide .volume-control {
+  transition: all 0s ease;
+  opacity: 0;
+}
+
+/* Styling the toggle button for better appearance */
+.toggle-player {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--clr);
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.player {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 4.5rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: 0 1.5rem;
+}
+
+.sound-bars {
+  flex: 0.5;
+  width: 2rem;
+  height: 1.2rem;
+  margin: 0.5rem;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  transform: scale(2.5);
+}
+
+[class^="bar-"] {
+  height: 1.5px;
+  width: 1.5px;
+  background-color: #cc7722;
+  border-radius: 4px;
+  margin: 0 1px;
+}
+
+[class^="bar-"]:nth-child(2n) {
+  background-color: #c19a6b;
+}
+
+/* Sound Bars Animation (only works when .animate is applied) */
+.sound-bars.animate .bar-1 {
+  animation: lineWaveAnim1 0.25s 0.75s both infinite alternate;
+}
+.sound-bars.animate .bar-2 {
+  animation: lineWaveAnim2 0.5s 0.5s both infinite alternate;
+}
+.sound-bars.animate .bar-3 {
+  animation: lineWaveAnim1 0.75s 0.25s both infinite alternate;
+}
+.sound-bars.animate .bar-4 {
+  animation: lineWaveAnim2 0.5s both infinite alternate;
+}
+.sound-bars.animate .bar-5 {
+  animation: lineWaveAnim1 0.75s 0.5s both infinite alternate;
+}
+
+@keyframes lineWaveAnim1 {
+  from {
+    height: 1px;
+  }
+
+  to {
+    height: 10px;
+  }
+}
+
+@keyframes lineWaveAnim2 {
+  from {
+    height: 2px;
+  }
+
+  to {
+    height: 16px;
+  }
+}
+
+.track-info {
+  flex: 5;
+  padding: 1rem;
+  transition: all 0.25s ease;
+}
+
+/* Ensure smooth transition for .track-nav and .volume-control */
+.track-nav,
+.volume-control {
+  transition: opacity 0.25s ease;
+}
+
+.track-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.track-nav {
+  flex: 3;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.playpause-track,
+.prev-track,
+.next-track {
+  padding: 5px 10px;
+  opacity: 0.8;
+}
+
+.prev-track,
+.next-track,
+.playpause-track ion-icon {
+  font-size: 1.2rem;
+}
+
+.volume-control {
+  flex: 3;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.volume-control ion-icon {
+  font-size: 1.5rem;
+  color: var(--clr);
+}
+
+/* Style the slider track */
+input[type="range"] {
+  -webkit-appearance: none; /* Remove default styling */
+  appearance: none;
+  width: 100%; /* Full width */
+  height: 1rem; /* Height of the track */
+  background: #555; /* Background color of the track */
+  overflow: hidden; /* Ensure border-radius is visible */
+  border-radius: 0.5rem; /* Rounded corners */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Opacity for the track */
+  transition: opacity 0.2s; /* Smooth transition */
+}
+
+input[type="range"]:hover {
+  opacity: 1; /* Fully opaque on hover */
+}
+
+/* Style the slider thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Remove default styling */
+  appearance: none;
+  width: 1rem; /* Width of the thumb */
+  height: 1rem; /* Height of the thumb */
+  background: var(--clr); /* Color of the thumb */
+  border-radius: 50%; /* Make it circular */
+  cursor: pointer; /* Pointer cursor */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Optional shadow */
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  background: var(--clr);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Style the active part of the track on Webkit browsers */
+input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(90deg, #ff8c00, #ffd700); /* Gradient color */
+}
+
+/* Style the active part of the track on Firefox */
+input[type="range"]::-moz-range-progress {
+  background: linear-gradient(90deg, #ff8c00, #ffd700);
+}
+
+/* Style for non-Webkit browsers */
+input[type="range"]::-ms-fill-lower {
+  background: linear-gradient(90deg, #ff8c00, #ffd700);
+}
+
+@media (max-width: 900px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .left-side {
+    position: relative;
+    width: 80%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space between to push toggle to bottom */
+    align-items: center;
+    border-radius: 0.5rem;
+  }
+
+  .listed-songs {
+    max-height: 30vh; /* Adjust based on screen size */
+    overflow-y: auto;
+  }
+
+  .buttons {
+    margin-bottom: 2rem; /* Adjust this margin to suit your layout */
+  }
+
+  .toggle-left {
+    display: none;
+  }
+
+  .right-side {
+    flex-grow: 1; /* Fill remaining space */
+    height: auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    max-width: 100vw; /* Prevent overflow */
+    overflow-x: hidden;
+  }
+
+  .music-player-container {
+    width: 100%;
+    max-width: 90%;
+  }
+
+  .track-name,
+  .track-duration {
+    font-size: 0.8rem;
+  }
+
+  .playpause-track,
+  .prev-track,
+  .next-track {
+    padding: 0.2rem 0.5rem;
+  }
+
+  .sound-bars {
+    margin: 0 0.6rem;
+  }
+}
+
+@media (max-width: 620px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Ensure body takes full viewport height */
+  }
+
+  .listed-songs {
+    max-height: 25vh; /* Adjust based on screen size */
+    overflow-y: auto;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: .5rem; /* Adjust this margin to suit your layout */
+  }
+
+  .buttons button {
+    font-size: 0.7rem;
+  }
+
+  .player {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    max-width: 15rem;
+  }
+
+  .toggle-player {
+    display: none;
+  }
+
+  /* Center sound bars, track name, and duration within the container */
+  .sound-bars,
+  .track-info {
+    width: 100%;
+    padding: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .track-info {
+    flex-direction: column;
+  }
+
+  .track-name,
+  .track-duration {
+    font-size: 0.6rem;
+    padding: 0.2rem;
+  }
+
+  .playpause-track,
+  .prev-track,
+  .next-track {
+    padding: 0.5rem 0.5rem;
+  }
+
+  .prev-track,
+  .next-track,
+  .playpause-track ion-icon {
+    font-size: 1rem;
+  }
+
+  .sound-bars {
+    margin: 0.1rem 0.5rem;
+  }
+
+  .volume-control {
+    margin-bottom: 0.5rem;
+  }
+}

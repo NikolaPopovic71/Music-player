@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music Player</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+  <!-- Left side of 1/4 screen -->
+  <div class="left-side">
+    <div class="toggle-left">
+      <ion-icon name="remove-outline"></ion-icon>
+    </div>
+    <div class="file-input">
+      <label for="song-upload" class="custom-file-upload">Choose Songs</label>
+      <input type="file" id="song-upload" accept=".mp3" multiple />
+    </div>
+
+    <div class="listed-songs"></div>
+    <p class="total-duration">Total Duration: 0:00</p>
+    <div class="buttons">
+      <button type="button">Listed</button>
+      <button type="button">Shuffled</button>
+      <button type="button">Clear</button>
+    </div>
+  </div>
+
+  <!-- Right side of 3/4 screen-->
+  <div class="right-side">
+    <div class="music-player-container">
+      <div class="toggle-player">
+        <ion-icon name="remove-outline"></ion-icon>
+      </div>
+
+      <div class="player">
+        <div class="sound-bars">
+          <div class="bar-1"></div>
+          <div class="bar-2"></div>
+          <div class="bar-3"></div>
+          <div class="bar-4"></div>
+          <div class="bar-5"></div>
+        </div>
+
+        <div class="track-info">
+          <div class="track-name">Track Name</div>
+          <div class="track-duration">0:00 / 0:00</div>
+        </div>
+
+        <div class="track-nav">
+          <div class="prev-track" onclick="prevTrack()">
+            <ion-icon name="play-back-sharp"></ion-icon>
+          </div>
+          <div class="playpause-track" onclick="playPauseTrack()">
+            <ion-icon name="play-sharp"></ion-icon>
+          </div>
+          <div class="next-track" onclick="nextTrack()">
+            <ion-icon name="play-forward-sharp"></ion-icon>
+          </div>
+        </div>
+
+        <div class="volume-control">
+          <ion-icon name="volume-high-outline"></ion-icon>
+          <input
+            type="range"
+            id="volume-slider"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.5"
+            title="volume"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
